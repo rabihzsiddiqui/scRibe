@@ -2,10 +2,11 @@
 
 import { createContext, useContext, useState } from 'react';
 
-type Mode = 'write' | 'preview';
+export type Mode = 'write' | 'preview' | 'read';
 
 const ModeContext = createContext<{
   mode: Mode;
+  setMode: (mode: Mode) => void;
   toggle: () => void;
   isZen: boolean;
   toggleZen: () => void;
@@ -15,8 +16,13 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>('write');
   const [isZen, setIsZen] = useState(false);
 
+  // Cycles write → preview → read → write
   function toggle() {
-    setMode((prev) => (prev === 'write' ? 'preview' : 'write'));
+    setMode((prev) => {
+      if (prev === 'write') return 'preview';
+      if (prev === 'preview') return 'read';
+      return 'write';
+    });
   }
 
   function toggleZen() {
@@ -24,7 +30,7 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ModeContext.Provider value={{ mode, toggle, isZen, toggleZen }}>
+    <ModeContext.Provider value={{ mode, setMode, toggle, isZen, toggleZen }}>
       {children}
     </ModeContext.Provider>
   );

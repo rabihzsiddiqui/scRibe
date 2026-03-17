@@ -19,6 +19,7 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-lora: var(--font-lora);
 }
 
 body {
@@ -163,3 +164,50 @@ body {
   opacity: 0.85;
 }
 
+/* reading mode — serif typography layered on top of md-preview */
+.md-read {
+  font-family: var(--font-lora), Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  line-height: 2;
+}
+
+.md-read p {
+  margin-bottom: 1.5em;
+}
+
+.md-read h1,
+.md-read h2,
+.md-read h3,
+.md-read h4,
+.md-read h5,
+.md-read h6 {
+  font-family: var(--font-lora), Georgia, serif;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  letter-spacing: -0.02em;
+}
+
+.md-read h1 { font-size: 2.2em; }
+.md-read h2 { font-size: 1.6em; }
+.md-read h3 { font-size: 1.3em; }
+
+.md-read blockquote {
+  font-style: italic;
+  padding-left: 1.5em;
+  margin: 1.75em 0;
+  opacity: 0.75;
+}
+
+.md-read li {
+  margin-bottom: 0.5em;
+}
+
+.md-read strong {
+  font-weight: 700;
+}
+
+.md-read code,
+.md-read pre {
+  font-family: var(--font-geist-mono), monospace;
+}
