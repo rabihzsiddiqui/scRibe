@@ -63,7 +63,7 @@ export function usePomodoro(config?: PomodoroConfig): PomodoroState & PomodoroCo
 
   const [mode, setMode] = useState<Phase>(PHASES.WORK);
   const [timeRemaining, setTimeRemaining] = useState<number>(
-    () => getDuration(PHASES.WORK, cfgRef.current),
+    getDuration(PHASES.WORK, resolveCfg(config)),
   );
   const [isRunning, setIsRunning] = useState(false);
   const [completedSessions, setCompletedSessions] = useState(0);
