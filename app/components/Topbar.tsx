@@ -2,21 +2,11 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { useTheme } from './ThemeProvider';
-import { useMode } from './ModeProvider';
+import { useMode, type Mode } from './ModeProvider';
 import { useContent } from './ContentProvider';
 import { PomodoroWidget } from './PomodoroWidget';
-
-function getFilename(text: string, ext: string): string {
-  const firstLine = text.split('\n')[0].trim().replace(/^#+\s*/, '');
-  if (!firstLine) return `scribe-export-${Date.now()}.${ext}`;
-  const slug = firstLine
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .slice(0, 30);
-  return slug ? `${slug}.${ext}` : `scribe-export-${Date.now()}.${ext}`;
-}
+import { AmbientSoundControl } from './AmbientSoundControl';
+import { getFilename } from '../lib/utils';
 
 function triggerDownload(content: string, filename: string) {
   const blob = new Blob([content], { type: 'text/plain' });
@@ -28,9 +18,15 @@ function triggerDownload(content: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+const MODES: { id: Mode; label: string }[] = [
+  { id: 'write', label: 'write' },
+  { id: 'preview', label: 'preview' },
+  { id: 'read', label: 'read' },
+];
+
 export function Topbar() {
   const { theme, toggle } = useTheme();
-  const { mode, toggle: toggleMode, isZen } = useMode();
+  const { mode, setMode, isZen } = useMode();
   const { text } = useContent();
   const [exportOpen, setExportOpen] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
@@ -70,34 +66,26 @@ export function Topbar() {
         </span>
 
         <div className="flex items-center gap-2">
+          {/* 3-way mode toggle */}
           <div
             className="flex items-center rounded-md overflow-hidden text-xs font-medium"
             style={{ border: '1px solid var(--border)' }}
           >
-            <button
-              onClick={() => mode !== 'write' && toggleMode()}
-              className="px-3 py-1.5 transition-colors duration-150 cursor-pointer"
-              style={{
-                backgroundColor: mode === 'write' ? 'var(--accent)' : 'transparent',
-                color: mode === 'write' ? 'var(--bg)' : 'var(--accent)',
-              }}
-              aria-pressed={mode === 'write'}
-              aria-label="write mode"
-            >
-              write
-            </button>
-            <button
-              onClick={() => mode !== 'preview' && toggleMode()}
-              className="px-3 py-1.5 transition-colors duration-150 cursor-pointer"
-              style={{
-                backgroundColor: mode === 'preview' ? 'var(--accent)' : 'transparent',
-                color: mode === 'preview' ? 'var(--bg)' : 'var(--accent)',
-              }}
-              aria-pressed={mode === 'preview'}
-              aria-label="preview mode"
-            >
-              preview
-            </button>
+            {MODES.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setMode(id)}
+                className="px-3 py-1.5 transition-colors duration-150 cursor-pointer"
+                style={{
+                  backgroundColor: mode === id ? 'var(--accent)' : 'transparent',
+                  color: mode === id ? 'var(--bg)' : 'var(--accent)',
+                }}
+                aria-pressed={mode === id}
+                aria-label={`${label} mode`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {/* export */}
@@ -140,6 +128,10 @@ export function Topbar() {
             )}
           </div>
 
+          <AmbientSoundControl />
+
+          <PomodoroWidget />
+
           <button
             onClick={toggle}
             aria-label={theme === 'dark' ? 'switch to light mode' : 'switch to dark mode'}
@@ -149,11 +141,6 @@ export function Topbar() {
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
         </div>
-      </div>
-
-      {/* pill: always visible, zen-aware opacity handled inside PomodoroWidget */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2">
-        <PomodoroWidget />
       </div>
     </header>
   );
