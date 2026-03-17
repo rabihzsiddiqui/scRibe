@@ -44,5 +44,17 @@ export function useSessions() {
     setCompletedToday((prev) => prev + 1);
   }, []);
 
-  return { completedToday, logSession };
+  const clearToday = useCallback(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const all: Record<string, number[]> = raw ? JSON.parse(raw) : {};
+      all[todayKey()] = [];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    } catch {
+      // storage unavailable
+    }
+    setCompletedToday(0);
+  }, []);
+
+  return { completedToday, logSession, clearToday };
 }
