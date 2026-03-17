@@ -61,9 +61,9 @@ export function Topbar() {
           transition: 'opacity 250ms ease',
         }}
       >
-        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
+        <a href="/" className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text)', textDecoration: 'none' }}>
           scRibe<span style={{ color: 'var(--accent)' }}>.</span>
-        </span>
+        </a>
 
         <div className="flex items-center gap-2">
           {/* 3-way mode toggle */}
