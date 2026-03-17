@@ -62,7 +62,7 @@ export function Topbar() {
         }}
       >
         <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--text)' }}>
-          scRibe
+          scRibe<span style={{ color: 'var(--accent)' }}>.</span>
         </span>
 
         <div className="flex items-center gap-2">
