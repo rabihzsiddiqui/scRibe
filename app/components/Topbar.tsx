@@ -62,7 +62,7 @@ export function Topbar() {
         }}
       >
         <a href="/" className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text)', textDecoration: 'none' }}>
-          scRibe<span className="inline-block w-[6px] h-[6px] ml-[2px] align-middle mb-[2px] bg-indigo-500" />
+          scRibe<span className="inline-block w-[4px] h-[4px] ml-[1.5px] align-baseline bg-indigo-500" />
         </a>
 
         <div className="flex items-center gap-2">
