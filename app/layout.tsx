@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from './components/ThemeProvider';
 import { ModeProvider } from './components/ModeProvider';
+import { ContentProvider } from './components/ContentProvider';
 import { Topbar } from './components/Topbar';
+import { MainLayout } from './components/MainLayout';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,13 +40,12 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           <ModeProvider>
-          <Topbar />
-          <main
-            className="w-full"
-            style={{ height: 'calc(100vh - 48px)', marginTop: '48px' }}
-          >
-            {children}
-          </main>
+            <ContentProvider>
+              <Topbar />
+              <MainLayout>
+                {children}
+              </MainLayout>
+            </ContentProvider>
           </ModeProvider>
         </ThemeProvider>
       </body>

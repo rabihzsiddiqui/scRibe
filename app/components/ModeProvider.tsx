@@ -7,17 +7,24 @@ type Mode = 'write' | 'preview';
 const ModeContext = createContext<{
   mode: Mode;
   toggle: () => void;
+  isZen: boolean;
+  toggleZen: () => void;
 } | null>(null);
 
 export function ModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>('write');
+  const [isZen, setIsZen] = useState(false);
 
   function toggle() {
     setMode((prev) => (prev === 'write' ? 'preview' : 'write'));
   }
 
+  function toggleZen() {
+    setIsZen((prev) => !prev);
+  }
+
   return (
-    <ModeContext.Provider value={{ mode, toggle }}>
+    <ModeContext.Provider value={{ mode, toggle, isZen, toggleZen }}>
       {children}
     </ModeContext.Provider>
   );
