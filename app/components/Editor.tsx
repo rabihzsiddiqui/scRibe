@@ -4,15 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { marked } from 'marked';
 import { useMode } from './ModeProvider';
 import { useContent } from './ContentProvider';
+import { useSessionStats } from '../hooks/useSessionStats';
+import { getStats } from '../lib/utils';
 
 const STORAGE_KEY = 'scribe-content';
-
-function getStats(text: string) {
-  const chars = text.length;
-  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-  const readTime = Math.max(1, Math.ceil(words / 200));
-  return { words, chars, readTime };
-}
 
 type FormatType = 'bold' | 'italic' | 'link' | 'heading';
 
@@ -59,7 +54,7 @@ const SHORTCUTS = [
   { keys: '⌘ I', label: 'italic' },
   { keys: '⌘ K', label: 'link' },
   { keys: '⌘ ⇧ H', label: 'heading' },
-  { keys: '⌘ P', label: 'toggle preview' },
+  { keys: '⌘ P', label: 'cycle mode' },
   { keys: '⌘ ⇧ F', label: 'focus mode' },
   { keys: '⌘ /', label: 'show shortcuts' },
   { keys: 'Esc', label: 'exit focus mode' },
@@ -74,6 +69,7 @@ export function Editor() {
   const { words, chars, readTime } = getStats(text);
   const { mode, toggle: toggleMode, isZen, toggleZen } = useMode();
   const initialized = useRef(false);
+  const { sessionWords, elapsed, reset: resetSession } = useSessionStats(words);
 
   // restore from localStorage on mount
   useEffect(() => {
@@ -182,6 +178,11 @@ export function Editor() {
                 caretColor: 'var(--accent)',
               }}
             />
+          ) : mode === 'read' ? (
+            <div
+              className="md-preview md-read min-h-[calc(100vh-12rem)]"
+              dangerouslySetInnerHTML={{ __html: html || '<p class="md-empty">nothing to read yet.</p>' }}
+            />
           ) : (
             <div
               className="md-preview min-h-[calc(100vh-12rem)]"
@@ -193,7 +194,7 @@ export function Editor() {
 
       {/* status bar */}
       <div
-        className="fixed bottom-0 inset-x-0 h-9 flex items-center justify-center gap-3 text-xs"
+        className="fixed bottom-0 inset-x-0 h-9 flex items-center justify-center gap-3 text-xs relative"
         style={{
           borderTop: '1px solid var(--border)',
           backgroundColor: 'var(--bg)',
@@ -205,11 +206,23 @@ export function Editor() {
         }}
       >
         <span>{words} {words === 1 ? 'word' : 'words'}</span>
-        <span style={{ color: 'var(--border)' }}>|</span>
+        <Pipe />
         <span>{chars} {chars === 1 ? 'char' : 'chars'}</span>
-        <span style={{ color: 'var(--border)' }}>|</span>
+        <Pipe />
         <span>{readTime} min read</span>
-        <span style={{ color: 'var(--border)' }}>|</span>
+        <Pipe />
+        <span>+{sessionWords} this session</span>
+        <Pipe />
+        <span>{elapsed}</span>
+        <Pipe />
+        <button
+          onClick={resetSession}
+          className="cursor-pointer transition-opacity duration-150 hover:opacity-100"
+          style={{ opacity: 0.6 }}
+        >
+          reset session
+        </button>
+        <Pipe />
         <span
           style={{
             opacity: savedVisible ? 0.6 : 0,
@@ -218,6 +231,19 @@ export function Editor() {
         >
           saved
         </span>
+
+        {/* pomodoRo attribution — right-anchored, doesn't affect centered layout */}
+        <a
+          href="https://romodoro.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute right-3 text-xs no-underline hover:underline transition-opacity duration-200"
+          style={{ color: 'var(--text)', opacity: 0.4 }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.4')}
+        >
+          timer powered by pomodo<span style={{ color: 'var(--accent)' }}>R</span>o
+        </a>
       </div>
 
       {/* zen mode hint */}
@@ -273,4 +299,8 @@ export function Editor() {
       )}
     </>
   );
+}
+
+function Pipe() {
+  return <span style={{ color: 'var(--border)' }}>|</span>;
 }
