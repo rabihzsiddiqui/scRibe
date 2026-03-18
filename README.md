@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# scRibe
 
-## Getting Started
+a minimal markdown writing tool built for focus.
 
-First, run the development server:
+write, preview, and read your work without clutter. everything saves automatically.
+
+---
+
+## what it does
+
+- **three modes** — write, preview, and read. cycle through them with `⌘ P` or the mode buttons in the header.
+- **zen mode** — hides the UI entirely so nothing competes with your words. `⌘ ⇧ F` to enter, `Esc` to exit.
+- **markdown formatting** — keyboard shortcuts for bold, italic, links, and headings while you type.
+- **live preview** — renders your markdown in real time.
+- **reading mode** — switches to a serif font with comfortable line spacing for reviewing finished work.
+- **pomodoro timer** — 25-minute focus sessions with short and long breaks. a soft chime marks each transition.
+- **ambient sounds** — choose between rain, white noise, or lo-fi to mask distractions.
+- **session stats** — tracks words written, characters, estimated read time, and time elapsed since you started.
+- **auto-save** — content saves to `localStorage` 500ms after you stop typing. no manual saves needed.
+- **theme** — dark and light modes, persisted across sessions.
+- **export** — download your work as `.md` or `.txt`. the filename is generated from the first line of your document.
+
+---
+
+## tech stack
+
+| layer | choice |
+|---|---|
+| framework | Next.js 16 (App Router) |
+| language | TypeScript (strict) |
+| styling | Tailwind CSS v4 |
+| markdown | marked v17 |
+| fonts | Geist Sans, Geist Mono, Lora |
+| audio | Web Audio API (procedural) |
+| storage | localStorage (no backend) |
+| tests | Vitest + jsdom |
+
+no database. no accounts. no tracking. everything lives in the browser.
+
+---
+
+## keyboard shortcuts
+
+| shortcut | action |
+|---|---|
+| `⌘ B` | bold |
+| `⌘ I` | italic |
+| `⌘ K` | link |
+| `⌘ ⇧ H` | heading |
+| `⌘ P` | cycle mode |
+| `⌘ ⇧ F` | focus mode |
+| `⌘ /` | show shortcuts |
+| `Esc` | exit focus mode |
+
+---
+
+## running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## tests
 
-## Learn More
+```bash
+npm test          # run once
+npm run test:watch  # watch mode
+```
 
-To learn more about Next.js, take a look at the following resources:
+the test suite covers word/character/reading-time calculations, auto-save debounce behavior, localStorage persistence, markdown rendering, theme toggle, and export filename generation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## project structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  components/     # Editor, Topbar, PomodoroWidget, ThemeProvider, …
+  hooks/          # useSessionStats, useAmbientSound, usePomodoro, …
+  lib/            # utils.ts, pomodoro.ts
+  globals.css     # CSS variables, markdown preview styles
+__tests__/        # Vitest test files
+public/audio/     # optional lo-fi audio file
+```
