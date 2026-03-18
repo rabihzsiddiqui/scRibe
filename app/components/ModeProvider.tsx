@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 
-export type Mode = 'write' | 'preview' | 'read';
+export type Mode = 'write' | 'read';
 
 const ModeContext = createContext<{
   mode: Mode;
@@ -16,13 +16,9 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>('write');
   const [isZen, setIsZen] = useState(false);
 
-  // Cycles write → preview → read → write
+  // Toggles write ↔ read
   function toggle() {
-    setMode((prev) => {
-      if (prev === 'write') return 'preview';
-      if (prev === 'preview') return 'read';
-      return 'write';
-    });
+    setMode((prev) => (prev === 'write' ? 'read' : 'write'));
   }
 
   function toggleZen() {

@@ -54,7 +54,7 @@ const SHORTCUTS = [
   { keys: '⌘ I', label: 'italic' },
   { keys: '⌘ K', label: 'link' },
   { keys: '⌘ ⇧ H', label: 'heading' },
-  { keys: '⌘ P', label: 'cycle mode' },
+  { keys: '⌘ P', label: 'toggle read' },
   { keys: '⌘ ⇧ F', label: 'focus mode' },
   { keys: '⌘ /', label: 'show shortcuts' },
   { keys: 'Esc', label: 'exit focus mode' },
@@ -178,15 +178,10 @@ export function Editor() {
                 caretColor: 'var(--accent)',
               }}
             />
-          ) : mode === 'read' ? (
+          ) : (
             <div
               className="md-preview md-read min-h-[calc(100vh-12rem)]"
               dangerouslySetInnerHTML={{ __html: html || '<p class="md-empty">nothing to read yet.</p>' }}
-            />
-          ) : (
-            <div
-              className="md-preview min-h-[calc(100vh-12rem)]"
-              dangerouslySetInnerHTML={{ __html: html || '<p class="md-empty">nothing to preview yet.</p>' }}
             />
           )}
         </div>

@@ -20,7 +20,6 @@ function triggerDownload(content: string, filename: string) {
 
 const MODES: { id: Mode; label: string }[] = [
   { id: 'write', label: 'write' },
-  { id: 'preview', label: 'preview' },
   { id: 'read', label: 'read' },
 ];
 
@@ -66,7 +65,7 @@ export function Topbar() {
         </a>
 
         <div className="flex items-center gap-2">
-          {/* 3-way mode toggle */}
+          {/* 2-way mode toggle */}
           <div
             className="flex items-center rounded-md overflow-hidden text-xs font-medium"
             style={{ border: '1px solid var(--border)' }}
